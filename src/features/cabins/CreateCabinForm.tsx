@@ -71,16 +71,18 @@ const CreateCabinForm = () => {
   });
 
   const onSubmitForm: SubmitHandler<CreateCabinFormData> = (data) => {
-    // TODO:image
-    const newCabin: Omit<TCabin, "id" | "created_at" | "image"> = {
+    const newCabin: Omit<TCabin, "id" | "created_at" | "image"> & {
+      image: File;
+    } = {
       name: data.name,
       maxCapacity: data.maxCapacity,
       regularPrice: data.regularPrice,
       discount: data.discount,
       description: data.description,
+      image: data.image[0],
     };
 
-    mutate(newCabin as TCabin);
+    mutate(newCabin as TCabin & { image: File });
   };
 
   return (
@@ -153,14 +155,19 @@ const CreateCabinForm = () => {
 
       <StyledFormRow>
         <Label htmlFor="image">Cabin photo</Label>
-        <FileInput id="image" accept="image/*" />
+        <FileInput
+          id="image"
+          accept="image/*"
+          type="file"
+          {...register("image", { required: "This Filed is Required." })}
+        />
       </StyledFormRow>
 
       <StyledFormRow>
         <Button disabled={isCreating} variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isCreating}>Edit cabin</Button>
+        <Button disabled={isCreating}>Add cabin</Button>
       </StyledFormRow>
     </Form>
   );
