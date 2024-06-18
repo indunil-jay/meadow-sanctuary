@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import { getCabins } from "../../services/apiCabins";
 import CabinRow from "./CabinRow";
+import Spinner from "../../components/ui/Spinner";
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -32,8 +33,12 @@ const CabinTable = () => {
     queryKey: ["cabins"],
     queryFn: getCabins,
   });
-  if (isLoading) return <p>loading</p>;
-  if (!cabins) return null;
+
+  if (isLoading) return <Spinner />;
+
+  //TODO: create component later
+  if (!cabins) return <p>Seems to be no cabins in the database.</p>;
+
   return (
     <Table role="table">
       <TableHeader role="row">
@@ -44,6 +49,7 @@ const CabinTable = () => {
         <div>Discount</div>
         <div></div>
       </TableHeader>
+
       {cabins.map((cabin) => (
         <CabinRow cabin={cabin} key={cabin.id} />
       ))}

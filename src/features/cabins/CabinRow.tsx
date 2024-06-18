@@ -48,7 +48,7 @@ type Props = {
 const CabinRow = ({ cabin }: Props) => {
   const { name, maxCapacity, regularPrice, discount, image } = cabin;
   return (
-    <TableRow>
+    <TableRow role="row">
       <Img src={image} alt={name} />
       <Cabin>{name}</Cabin>
       <div>Fits up to {maxCapacity}</div>
