@@ -30,3 +30,17 @@ export const deleteCabin = async (id: string) => {
     throw new Error("Cabins could not be deleted.");
   }
 };
+
+export const createCabin = async (cabin: TCabin) => {
+  const { data, error } = await supabase
+    .from("cabins")
+    .insert([cabin]) //this works because form registed ids are exatly with supabase columns name
+    .select();
+
+  if (error) {
+    console.log(error);
+    throw new Error("Cabins could not be created.");
+  }
+
+  return data;
+};

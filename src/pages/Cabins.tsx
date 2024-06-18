@@ -6,7 +6,7 @@ import CreateCabinForm from "../features/cabins/CreateCabinForm";
 const Cabins = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   useEffect(() => {
-    getCabins().then((data) => console.log(data));
+    getCabins();
   }, []);
 
   return (
