@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { TCabin } from "../../services/apiCabins";
+import { formatCurrency } from "../../utils/currancyFormatHelpers";
 
 const TableRow = styled.div`
   display: grid;
@@ -51,8 +52,8 @@ const CabinRow = ({ cabin }: Props) => {
       <Img src={image} alt={name} />
       <Cabin>{name}</Cabin>
       <div>Fits up to {maxCapacity}</div>
-      <Price>{regularPrice}</Price>
-      <Discount>{discount}</Discount>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      <Discount>{discount ? formatCurrency(discount) : "-"}</Discount>
       <button>Delete</button>
     </TableRow>
   );
