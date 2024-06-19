@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
-import { getCabins } from "../../services/apiCabins";
+
 import CabinRow from "./CabinRow";
 import Spinner from "../../components/ui/Spinner";
+import useGetCabin from "./hooks/useGetCabin";
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -29,12 +29,9 @@ const TableHeader = styled.header`
 `;
 
 const CabinTable = () => {
-  const { isLoading, data: cabins } = useQuery({
-    queryKey: ["cabins"],
-    queryFn: getCabins,
-  });
+  const { cabins, isGettingCabins } = useGetCabin();
 
-  if (isLoading) return <Spinner />;
+  if (isGettingCabins) return <Spinner />;
 
   //TODO: create component later
   if (!cabins) return <p>Seems to be no cabins in the database.</p>;

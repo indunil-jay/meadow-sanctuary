@@ -1,6 +1,4 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 
 import Input from "../../components/forms/Input";
 import Form from "../../components/forms/Form";
@@ -9,7 +7,9 @@ import FileInput from "../../components/forms/FileInput";
 import Button from "../../components/ui/Button";
 import FormRow from "../../components/forms/FormRow";
 import Row from "../../components/ui/Row";
-import { TCabin, createCabin, updateCabin } from "../../services/apiCabins";
+import { TCabin } from "../../services/apiCabins";
+import useCreateCabin from "./hooks/useCreateCabin";
+import useUpdateCabin from "./hooks/useUpdateCabin";
 
 export type TCabinFormData = {
   name: string;
@@ -26,8 +26,10 @@ type CabinFromType<T extends boolean> = T extends true
 
 const CabinForm = ({ currentCabin }: { currentCabin: TCabin }) => {
   const isUpdateSession = Boolean(currentCabin?.id);
+  const { createNewCabinFn, isCreating } = useCreateCabin();
+  const { isUpdating, updateCabinfn } = useUpdateCabin();
 
-  const { register, handleSubmit, reset, getValues, formState } =
+  const { register, handleSubmit, getValues, reset, formState } =
     useForm<TCabinFormData>({
       defaultValues: isUpdateSession
         ? {
@@ -42,38 +44,6 @@ const CabinForm = ({ currentCabin }: { currentCabin: TCabin }) => {
     });
 
   const { errors } = formState;
-  const queryClient = useQueryClient();
-
-  const { mutate: createNewCabin, isPending: isCreating } = useMutation({
-    mutationFn: createCabin,
-    onSuccess: () => {
-      toast.success("New cabin successfully created.");
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-      reset();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const { mutate: updateCabinfn, isPending: isUpdating } = useMutation({
-    mutationFn: ({
-      cabin,
-      id,
-    }: {
-      cabin: Partial<TCabinFormData>;
-      id: string;
-    }) => updateCabin(cabin, id),
-    onSuccess: () => {
-      toast.success("Cabin successfully updated.");
-      queryClient.invalidateQueries({ queryKey: ["cabins"] });
-      reset();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
-
   const isCreatingOrUpdating = isCreating || isUpdating;
 
   const onSubmitForm: SubmitHandler<TCabinFormData> = (data) => {
@@ -88,12 +58,19 @@ const CabinForm = ({ currentCabin }: { currentCabin: TCabin }) => {
     };
 
     if (isUpdateSession) {
-      updateCabinfn({
-        cabin: newCabin as Partial<TCabinFormData>,
-        id: currentCabin.id,
-      });
+      updateCabinfn(
+        {
+          cabin: newCabin as Partial<TCabinFormData>,
+          id: currentCabin.id,
+        },
+        {
+          onSuccess: () => reset(),
+        }
+      );
     } else {
-      createNewCabin(newCabin as TCabinFormData & { image: File });
+      createNewCabinFn(newCabin as TCabinFormData & { image: File }, {
+        onSuccess: () => reset(),
+      });
     }
   };
 
@@ -156,7 +133,6 @@ const CabinForm = ({ currentCabin }: { currentCabin: TCabin }) => {
         error={errors.description?.message}
       >
         <Textarea
-          disabled={isCreatingOrUpdating}
           id="description"
           {...register("description", { required: "This field is required." })}
         />

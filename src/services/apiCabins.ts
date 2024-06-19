@@ -25,8 +25,24 @@ export const getCabins = async (): Promise<TCabin[]> => {
 };
 
 export const deleteCabin = async (id: string) => {
-  const { error } = await supabase.from("cabins").delete().eq("id", id);
+  //get macthing cabins url
+  const { data: matchedCabin } = await supabase
+    .from("cabins")
+    .select("*")
+    .eq("id", id)
+    .single();
 
+  const matchedImage = (matchedCabin as TCabin).image.split("/").at(-1)!;
+  //delete image from storage.
+  const { error: imageDeleteError } = await supabase.storage
+    .from("cabins")
+    .remove([matchedImage]);
+
+  if (imageDeleteError) {
+    throw new Error("Cabins could not be deleted.");
+  }
+
+  const { error } = await supabase.from("cabins").delete().eq("id", id);
   if (error) {
     console.log(error);
     throw new Error("Cabins could not be deleted.");
