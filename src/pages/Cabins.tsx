@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+
 import { getCabins } from "../services/apiCabins";
 import CabinTable from "../features/cabins/CabinTable";
-import CreateCabinForm from "../features/cabins/CreateCabinForm";
+import CabinForm from "../features/cabins/CabinForm";
 
 const Cabins = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -16,7 +17,7 @@ const Cabins = () => {
       <button onClick={() => setShowForm((show) => !show)}>
         Add new Cabin
       </button>
-      {showForm && <CreateCabinForm />}
+      {showForm && <CabinForm />}
     </>
   );
 };

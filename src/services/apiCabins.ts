@@ -1,15 +1,16 @@
+import { TCabinFormData } from "../features/cabins/CabinForm";
 import supabase, { supabaseUrl } from "./supabase";
 import { v4 as uuidv4 } from "uuid";
 
 export type TCabin = {
   id: string;
   created_at: string;
+  image: string;
   name: string;
   maxCapacity: number;
   regularPrice: number;
   discount: number;
   description: string;
-  image: string;
 };
 
 export const getCabins = async (): Promise<TCabin[]> => {
@@ -33,8 +34,8 @@ export const deleteCabin = async (id: string) => {
 };
 
 export const createCabin = async (
-  cabin: TCabin & { image: File }
-): Promise<TCabin[]> => {
+  cabin: TCabinFormData & { image: File }
+): Promise<TCabin> => {
   // Remove "/" from the received image string otherwise it creates subfolders in the bucket
   const imageName = `${uuidv4()}-${cabin.image.name}`.replace(/\//g, "");
 
@@ -50,10 +51,11 @@ export const createCabin = async (
   const { data, error } = await supabase
     .from("cabins")
     .insert([{ ...cabin, image: imagePath }])
-    .select();
+    .select()
+    .single();
 
   // Check if there is a cabin data creation error
-  if (error || !data || data.length === 0) {
+  if (error || !data) {
     console.log(error);
     throw new Error("Cabin could not be created.");
   }
@@ -63,7 +65,7 @@ export const createCabin = async (
     console.log(imageError);
     // Delete the cabin record if there was an image upload error
     try {
-      await supabase.from("cabins").delete().eq("id", data[0].id);
+      await supabase.from("cabins").delete().eq("id", data.id);
     } catch (deleteError) {
       console.log("Error deleting cabin record:", deleteError);
       throw new Error("Failed to clean up after failed cabin creation.");
@@ -71,5 +73,53 @@ export const createCabin = async (
     throw new Error("Cabin image could not be uploaded.");
   }
 
+  return data;
+};
+
+export const updateCabin = async (
+  cabin: Partial<TCabinFormData>,
+  id: string
+) => {
+  const imageName =
+    typeof cabin.image === "string"
+      ? cabin.image
+      : `${uuidv4()}-${cabin.image?.name}`.replace(/\//g, "");
+  const imagePath =
+    typeof cabin.image === "string"
+      ? cabin.image
+      : `${supabaseUrl}/storage/v1/object/public/cabins/${imageName}`;
+
+  if (cabin.image && typeof cabin.image !== "string") {
+    //get old image and delete
+    //get
+    const { data: matchedCabin } = await supabase
+      .from("cabins")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    const matchedImage = (matchedCabin as TCabin).image.split("/").at(-1)!;
+    //delete
+    await supabase.storage.from("cabins").remove([matchedImage]);
+
+    //then add new image
+    const { error: UpdatingStorageError } = await supabase.storage
+      .from("cabins")
+      .upload(imageName, cabin.image);
+
+    // Check if there is an image upload error then return
+    if (UpdatingStorageError) return;
+  }
+  const { data, error } = await supabase
+    .from("cabins")
+    .update({ ...cabin, image: imagePath })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error || !data) {
+    console.log(error);
+    throw new Error("Cabin could not be updated.");
+  }
   return data;
 };
