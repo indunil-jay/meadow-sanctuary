@@ -1,14 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { getCabins } from "../services/apiCabins";
 import CabinTable from "../features/cabins/CabinTable";
 import CabinForm from "../features/cabins/CabinForm";
 
 const Cabins = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
-  useEffect(() => {
-    getCabins();
-  }, []);
 
   return (
     <>

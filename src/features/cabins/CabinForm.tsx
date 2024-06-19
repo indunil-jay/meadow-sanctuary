@@ -24,7 +24,7 @@ type CabinFromType<T extends boolean> = T extends true
   ? Partial<TCabinFormData>
   : TCabinFormData;
 
-const CabinForm = ({ currentCabin }: { currentCabin: TCabin }) => {
+const CabinForm = ({ currentCabin }: { currentCabin?: TCabin }) => {
   const isUpdateSession = Boolean(currentCabin?.id);
   const { createNewCabinFn, isCreating } = useCreateCabin();
   const { isUpdating, updateCabinfn } = useUpdateCabin();
@@ -54,10 +54,10 @@ const CabinForm = ({ currentCabin }: { currentCabin: TCabin }) => {
       discount: Number(data.discount) || 0,
       description: data.description,
       image:
-        data.image instanceof FileList ? data.image[0] : currentCabin.image,
+        data.image instanceof FileList ? data.image[0] : currentCabin?.image,
     };
 
-    if (isUpdateSession) {
+    if (isUpdateSession && currentCabin) {
       updateCabinfn(
         {
           cabin: newCabin as Partial<TCabinFormData>,
