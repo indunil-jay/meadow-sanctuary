@@ -24,7 +24,12 @@ type CabinFromType<T extends boolean> = T extends true
   ? Partial<TCabinFormData>
   : TCabinFormData;
 
-const CabinForm = ({ currentCabin }: { currentCabin?: TCabin }) => {
+type Props = {
+  currentCabin?: TCabin;
+  onCloseModal?: () => void;
+};
+
+const CabinForm = ({ currentCabin, onCloseModal }: Props) => {
   const isUpdateSession = Boolean(currentCabin?.id);
   const { createNewCabinFn, isCreating } = useCreateCabin();
   const { isUpdating, updateCabinfn } = useUpdateCabin();
@@ -64,18 +69,27 @@ const CabinForm = ({ currentCabin }: { currentCabin?: TCabin }) => {
           id: currentCabin.id,
         },
         {
-          onSuccess: () => reset(),
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
         }
       );
     } else {
       createNewCabinFn(newCabin as TCabinFormData & { image: File }, {
-        onSuccess: () => reset(),
+        onSuccess: () => {
+          reset();
+          onCloseModal?.();
+        },
       });
     }
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmitForm)}>
+    <Form
+      onSubmit={handleSubmit(onSubmitForm)}
+      type={onCloseModal !== undefined ? "modal" : "regular"}
+    >
       <FormRow label="Cabin name" error={errors.name?.message}>
         <Input
           disabled={isCreatingOrUpdating}
@@ -155,6 +169,7 @@ const CabinForm = ({ currentCabin }: { currentCabin?: TCabin }) => {
           disabled={isCreatingOrUpdating}
           $variation="secondary"
           type="reset"
+          onClick={() => onCloseModal?.()}
         >
           Cancel
         </Button>
