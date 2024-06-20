@@ -3,7 +3,7 @@ import supabase, { supabaseUrl } from "./supabase";
 import { v4 as uuidv4 } from "uuid";
 
 export type TCabin = {
-  id: string;
+  id: number;
   created_at: string;
   image: string;
   name: string;
