@@ -4,29 +4,30 @@ import useGetCabin from "./hooks/useGetCabin";
 import Table from "../../components/ui/Table";
 import { TCabin } from "../../services/apiCabins";
 import { useSearchParams } from "react-router-dom";
+import { FilterOption } from "./CabinTableOperations";
 
 const CabinTable = () => {
   const { cabins, isGettingCabins } = useGetCabin();
   const [searchParams] = useSearchParams();
 
+  if (isGettingCabins) return <Spinner />;
+
   //TODO: create component later
   if (!cabins) return <p>Seems to be no cabins in the database.</p>;
 
-  const filterValue = searchParams.get("discount") || "all";
+  const filterValue = searchParams.get("discount") || FilterOption.ALL;
 
   let filterCabins: TCabin[] = [];
 
-  if (filterValue === "all") {
+  if (filterValue === FilterOption.ALL) {
     filterCabins = cabins;
   }
-  if (filterValue === "no-discount") {
+  if (filterValue === FilterOption.NO_DISCOUNT) {
     filterCabins = cabins?.filter((cabin) => cabin.discount === 0);
   }
-  if (filterValue === "with-discount") {
+  if (filterValue === FilterOption.WITH_DISCOUNT) {
     filterCabins = cabins?.filter((cabin) => cabin.discount > 0);
   }
-
-  if (isGettingCabins) return <Spinner />;
 
   return (
     <Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">

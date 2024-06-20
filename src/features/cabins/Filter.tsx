@@ -11,13 +11,13 @@ const StyledFilter = styled.div`
   gap: 0.4rem;
 `;
 
-const FilterButton = styled.button<{ $active?: "false" | "active" }>`
+const FilterButton = styled.button<{ active?: "false" | "active" }>`
   background-color: var(--color-grey-0);
   border: none;
   text-transform: capitalize;
 
   ${(props) =>
-    props.$active === "active" &&
+    props.active === "active" &&
     css`
       background-color: var(--color-brand-600);
       color: var(--color-brand-50);
@@ -37,24 +37,36 @@ const FilterButton = styled.button<{ $active?: "false" | "active" }>`
 `;
 
 FilterButton.defaultProps = {
-  $active: "false",
+  active: "false",
 };
 
-const Filter = () => {
+type Props = {
+  filterValue: string;
+  options: { value: string; label: string }[];
+};
+
+const Filter = ({ filterValue, options }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  //addd url params
   const handleClicK = (value: string) => {
-    searchParams.set("discount", value);
+    searchParams.set(filterValue, value);
     setSearchParams(searchParams);
   };
+
+  const currentFilter = searchParams.get(filterValue) || options[0].value;
+
   return (
     <StyledFilter>
-      <FilterButton onClick={() => handleClicK("all")}>All</FilterButton>
-      <FilterButton onClick={() => handleClicK("no-discount")}>
-        No discount
-      </FilterButton>
-      <FilterButton onClick={() => handleClicK("with-discount")}>
-        With Discount
-      </FilterButton>
+      {options.map((option) => (
+        <FilterButton
+          onClick={() => handleClicK(option.value)}
+          key={option.value}
+          active={currentFilter === option.value ? "active" : "false"}
+        >
+          {option.label}
+        </FilterButton>
+      ))}
     </StyledFilter>
   );
 };
