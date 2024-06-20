@@ -17,12 +17,19 @@ const useGetBookings = () => {
   const [field, order] = sortValue.split("-");
   const sort = { field, order };
 
-  const { isLoading: isGettingBookings, data: bookings } = useQuery({
-    queryKey: ["bookings", filter, sort],
-    queryFn: () => getBookings({ filter, sort }),
+  //server-side pagination
+  const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
+
+  const { isLoading: isGettingBookings, data: bookingsData } = useQuery({
+    queryKey: ["bookings", filter, sort, page],
+    queryFn: () => getBookings({ filter, sort, page }),
   });
 
-  return { isGettingBookings, bookings };
+  return {
+    isGettingBookings,
+    bookings: bookingsData?.bookings,
+    count: bookingsData?.count,
+  };
 };
 
 export default useGetBookings;

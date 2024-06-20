@@ -1,3 +1,4 @@
+import { PAGE_SIZE } from "../constants";
 import supabase from "./supabase";
 
 export enum STATUS {
@@ -57,17 +58,24 @@ type TBookingFilter = {
         order: string;
       }
     | undefined;
+
+  page: number | undefined;
+};
+
+export type TBookingReturnType = {
+  bookings: TBookingTableView[];
+  count: number | null;
 };
 
 export const getBookings = async ({
   filter,
   sort,
-}: TBookingFilter): Promise<TBookingTableView[]> => {
-  let query = supabase
-    .from("bookings")
-    .select(
-      "id,created_at,endDate,startDate,numNights,numGuests,totalPrice,status,guests(fullName,email),cabins(name)"
-    );
+  page,
+}: TBookingFilter): Promise<TBookingReturnType> => {
+  let query = supabase.from("bookings").select(
+    "id,created_at,endDate,startDate,numNights,numGuests,totalPrice,status,guests(fullName,email),cabins(name)",
+    { count: "exact" } //this retuns count of data
+  );
 
   if (filter) {
     query = query.eq(filter.field, filter.value);
@@ -77,11 +85,19 @@ export const getBookings = async ({
     query = query.order(sort.field, { ascending: sort.order === "asc" });
   }
 
-  const { data, error } = await query;
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE;
+    const to = from + (PAGE_SIZE - 1);
+    query = query.range(from, to);
+  }
+
+  const { data, error, count } = await query;
 
   if (error) {
     throw new Error("Bookings could not be retrieved.");
   }
 
-  return data as unknown as TBookingTableView[];
+  const bookings = data as unknown as TBookingTableView[];
+
+  return { bookings, count };
 };

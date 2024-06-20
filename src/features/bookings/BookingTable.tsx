@@ -1,3 +1,4 @@
+import Pagination from "../../components/Pagination";
 import Empty from "../../components/ui/Empty";
 import Spinner from "../../components/ui/Spinner";
 import Table from "../../components/ui/Table";
@@ -5,11 +6,11 @@ import BookingRow from "./BookingRow";
 import useGetBookings from "./hooks/useGetBookings";
 
 function BookingTable() {
-  const { bookings, isGettingBookings } = useGetBookings();
+  const { bookings, count, isGettingBookings } = useGetBookings();
 
   if (isGettingBookings) return <Spinner />;
 
-  if (!bookings) return <Empty resourceName="bookings" />;
+  if (!bookings || !count) return <Empty resourceName="bookings" />;
 
   return (
     <>
@@ -29,6 +30,9 @@ function BookingTable() {
             <BookingRow key={booking.id} booking={booking} />
           )}
         />
+        <Table.Footer>
+          <Pagination count={count} />
+        </Table.Footer>
       </Table>
     </>
   );
