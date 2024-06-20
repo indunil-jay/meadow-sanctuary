@@ -10,7 +10,7 @@ const Row = styled.div<RowType>`
   ${(props) =>
     props.type === "horizontal" &&
     css`
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
       gap: 1.6rem;
     `}
