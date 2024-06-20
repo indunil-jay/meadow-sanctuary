@@ -11,13 +11,13 @@ const StyledFilter = styled.div`
   gap: 0.4rem;
 `;
 
-const FilterButton = styled.button<{ active?: "false" | "active" }>`
+const FilterButton = styled.button<{ $active?: "false" | "active" }>`
   background-color: var(--color-grey-0);
   border: none;
   text-transform: capitalize;
 
   ${(props) =>
-    props.active === "active" &&
+    props.$active === "active" &&
     css`
       background-color: var(--color-brand-600);
       color: var(--color-brand-50);
@@ -37,7 +37,7 @@ const FilterButton = styled.button<{ active?: "false" | "active" }>`
 `;
 
 FilterButton.defaultProps = {
-  active: "false",
+  $active: "false",
 };
 
 type Props = {
@@ -62,7 +62,8 @@ const Filter = ({ filterValue, options }: Props) => {
         <FilterButton
           onClick={() => handleClicK(option.value)}
           key={option.value}
-          active={currentFilter === option.value ? "active" : "false"}
+          $active={currentFilter === option.value ? "active" : "false"}
+          disabled={currentFilter === option.value}
         >
           {option.label}
         </FilterButton>

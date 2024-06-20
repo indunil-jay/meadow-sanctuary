@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import Filter from "./Filter";
 import TableOperations from "./TableOperations";
+import Sort from "./Sort";
 
 export enum FilterOption {
   ALL = "all",
@@ -9,7 +10,7 @@ export enum FilterOption {
 }
 
 const CabinTableOperations = () => {
-  const dataArray = useMemo(
+  const filterData = useMemo(
     () => [
       { value: FilterOption.ALL, label: "all" },
       { value: FilterOption.NO_DISCOUNT, label: "no discount" },
@@ -17,9 +18,21 @@ const CabinTableOperations = () => {
     ],
     []
   );
+  const sortData = useMemo(
+    () => [
+      { value: "name-asc", label: "sort by name (A-Z)" },
+      { value: "name-desc", label: "sort by name (Z-A)" },
+      { value: "regularPrice-asc", label: "sort by price (low first)" },
+      { value: "regularPrice-desc", label: "sort by price (high first)" },
+      { value: "maxCapacity-asc", label: "sort by capacity (low first)" },
+      { value: "maxCapacity-desc", label: "sort by capacity (high first)" },
+    ],
+    []
+  );
   return (
     <TableOperations>
-      <Filter filterValue="discount" options={dataArray} />
+      <Filter filterValue="discount" options={filterData} />
+      <Sort options={sortData} />
     </TableOperations>
   );
 };
