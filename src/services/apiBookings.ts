@@ -44,12 +44,40 @@ export type TBookingTableView = {
   };
 };
 
-export const getBookings = async (): Promise<TBookingTableView[]> => {
-  const { data, error } = await supabase
+type TBookingFilter = {
+  filter:
+    | {
+        field: string;
+        value: string;
+      }
+    | undefined;
+  sort:
+    | {
+        field: string;
+        order: string;
+      }
+    | undefined;
+};
+
+export const getBookings = async ({
+  filter,
+  sort,
+}: TBookingFilter): Promise<TBookingTableView[]> => {
+  let query = supabase
     .from("bookings")
     .select(
       "id,created_at,endDate,startDate,numNights,numGuests,totalPrice,status,guests(fullName,email),cabins(name)"
     );
+
+  if (filter) {
+    query = query.eq(filter.field, filter.value);
+  }
+
+  if (sort) {
+    query = query.order(sort.field, { ascending: sort.order === "asc" });
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error("Bookings could not be retrieved.");

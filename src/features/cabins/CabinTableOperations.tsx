@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import Filter from "./Filter";
-import TableOperations from "./TableOperations";
-import Sort from "./Sort";
+import Filter from "../../components/Filter";
+import TableOperations from "../../components/TableOperations";
+import Sort from "../../components/Sort";
 
 export enum FilterOption {
   ALL = "all",
