@@ -118,7 +118,7 @@ export type TBookingData = TBooking & {
   guests: TGuest;
 };
 
-export const getBooking = async (id: string): Promise<TBookingData> => {
+export const getBooking = async (id: number): Promise<TBookingData> => {
   const { data, error } = await supabase
     .from("bookings")
     .select("*, cabins(*), guests(*)")
@@ -132,3 +132,21 @@ export const getBooking = async (id: string): Promise<TBookingData> => {
 
   return data as TBookingData;
 };
+
+export async function updateBooking(
+  id: number,
+  obj: Partial<TBooking>
+): Promise<TBooking> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .update(obj)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be updated");
+  }
+  return data;
+}
