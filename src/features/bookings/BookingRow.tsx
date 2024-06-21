@@ -8,8 +8,13 @@ import { formatCurrency } from "../../utils/currancyFormatHelpers";
 import { formatDistanceFromNow } from "../../utils/dateFormatHelper";
 import ContextMenu from "../../components/ui/ContextMenu";
 import { HiDotsVertical } from "react-icons/hi";
-import { HiArrowDownOnSquare, HiOutlineEye } from "react-icons/hi2";
+import {
+  HiArrowDownOnSquare,
+  HiArrowUpOnSquare,
+  HiOutlineEye,
+} from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
+import useCheckOut from "../check-in-out/hooks/useCheckOut";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -50,6 +55,8 @@ const BookingRow = ({ booking }: { booking: TBookingTableView }) => {
     id,
   } = booking;
   const navigate = useNavigate();
+  const { checkingOutFn } = useCheckOut();
+
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -94,6 +101,12 @@ const BookingRow = ({ booking }: { booking: TBookingTableView }) => {
             <ContextMenu.MenuItem onClick={() => navigate(`/checkin/${id}`)}>
               <HiArrowDownOnSquare size={16} />
               Check in
+            </ContextMenu.MenuItem>
+          )}
+          {status === STATUS.CHECKED_IN && (
+            <ContextMenu.MenuItem onClick={() => checkingOutFn(id)}>
+              <HiArrowUpOnSquare size={16} />
+              Check out
             </ContextMenu.MenuItem>
           )}
         </ContextMenu.Menu>

@@ -11,6 +11,7 @@ type ICheckingType = {
 const useCheckin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
   const { mutate: checkinFn, isPending: isChecking } = useMutation({
     mutationFn: ({ bookingId, breakfast }: ICheckingType) =>
       updateBooking(bookingId, {
@@ -21,7 +22,9 @@ const useCheckin = () => {
 
     onSuccess: (data) => {
       toast.success(`Booking #${data.id} successfully checked in.`);
-      queryClient.invalidateQueries({ queryKey: ["booking", "bookings"] });
+      queryClient.invalidateQueries({
+        queryKey: ["booking", "bookings", data.id],
+      });
       navigate("/");
     },
 
