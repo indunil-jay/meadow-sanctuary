@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import { useSearchParams } from "react-router-dom";
-import Select from "./ui/Select";
+import Select from "./Select";
 
 type Props = {
   options: { value: string; label: string }[];

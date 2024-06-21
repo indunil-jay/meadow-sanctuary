@@ -1,4 +1,5 @@
 import { PAGE_SIZE } from "../constants";
+import { TCabin } from "./apiCabins";
 import supabase from "./supabase";
 
 export enum STATUS {
@@ -100,4 +101,34 @@ export const getBookings = async ({
   const bookings = data as unknown as TBookingTableView[];
 
   return { bookings, count };
+};
+
+export type TGuest = {
+  id: number;
+  created_at: string;
+  fullName: string;
+  email: string;
+  nationality: string;
+  countryFlag: string;
+  nationalID: string;
+};
+
+export type TBookingData = TBooking & {
+  cabins: TCabin;
+  guests: TGuest;
+};
+
+export const getBooking = async (id: string): Promise<TBookingData> => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*, cabins(*), guests(*)")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    console.error(error);
+    throw new Error("Booking not found");
+  }
+
+  return data as TBookingData;
 };

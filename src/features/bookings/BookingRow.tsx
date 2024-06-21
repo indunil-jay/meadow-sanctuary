@@ -2,13 +2,14 @@ import styled from "styled-components";
 import { format, isToday } from "date-fns";
 
 import { TBookingTableView } from "../../services/apiBookings";
-import Tag from "../../components/ui/Tag";
+import Tag from "../../components/Tag";
 import Table from "../../components/ui/Table";
 import { formatCurrency } from "../../utils/currancyFormatHelpers";
 import { formatDistanceFromNow } from "../../utils/dateFormatHelper";
 import ContextMenu from "../../components/ui/ContextMenu";
 import { HiDotsVertical } from "react-icons/hi";
 import { HiOutlineEye } from "react-icons/hi2";
+import { useNavigate } from "react-router-dom";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -48,6 +49,7 @@ const BookingRow = ({ booking }: { booking: TBookingTableView }) => {
     totalPrice,
     id,
   } = booking;
+  const navigate = useNavigate();
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -84,7 +86,7 @@ const BookingRow = ({ booking }: { booking: TBookingTableView }) => {
           <HiDotsVertical />
         </ContextMenu.Trigger>
         <ContextMenu.Menu>
-          <ContextMenu.MenuItem>
+          <ContextMenu.MenuItem onClick={() => navigate(`/bookings/${id}`)}>
             <HiOutlineEye size={16} />
             View Details
           </ContextMenu.MenuItem>

@@ -1,5 +1,5 @@
 import CabinRow from "./CabinRow";
-import Spinner from "../../components/ui/Spinner";
+import Spinner from "../../components/Spinner";
 import useGetCabin from "./hooks/useGetCabin";
 import Table from "../../components/ui/Table";
 import { TCabin } from "../../services/apiCabins";

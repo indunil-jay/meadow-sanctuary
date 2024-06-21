@@ -1,4 +1,4 @@
-import Row from "../components/ui/Row";
+import Row from "../components/Row";
 import BookingTable from "../features/bookings/BookingTable";
 import BookingTableOperations from "../features/bookings/BookingTableOperations";
 

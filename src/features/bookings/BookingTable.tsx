@@ -1,7 +1,7 @@
 import Pagination from "../../components/Pagination";
 import { ContextMenuProvider } from "../../components/ui/ContextMenu";
-import Empty from "../../components/ui/Empty";
-import Spinner from "../../components/ui/Spinner";
+import Empty from "../../components/Empty";
+import Spinner from "../../components/Spinner";
 import Table from "../../components/ui/Table";
 import BookingRow from "./BookingRow";
 import useGetBookings from "./hooks/useGetBookings";
