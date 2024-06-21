@@ -41,7 +41,6 @@ type Props = {
   children: ReactElement<{ id?: string }>;
   label: string;
   error?: string;
-  orientation?: string;
 };
 
 const FormRow = ({ label, error, children }: Props) => {
