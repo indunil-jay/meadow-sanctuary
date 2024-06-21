@@ -15,3 +15,14 @@ export const login = async ({ email, password }: TLogin) => {
 
   return data;
 };
+
+export const getCurrentUser = async () => {
+  const { data } = await supabase.auth.getSession();
+  if (!data.session) return null;
+
+  const { data: currentUser, error } = await supabase.auth.getUser();
+
+  if (error) throw new Error(error.message);
+
+  return currentUser.user;
+};

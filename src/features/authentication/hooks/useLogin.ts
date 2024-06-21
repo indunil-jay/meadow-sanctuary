@@ -8,7 +8,7 @@ const useLogin = () => {
 
   const { isPending: isLogin, mutate: loginFn } = useMutation({
     mutationFn: ({ email, password }: TLogin) => login({ email, password }),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("You have successfully logged in.");
       navigate("/dashboard");
     },
@@ -16,6 +16,7 @@ const useLogin = () => {
       toast.error(error.message);
     },
   });
+
   return {
     loginFn,
     isLogin,

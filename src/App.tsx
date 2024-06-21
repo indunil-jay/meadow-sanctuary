@@ -12,6 +12,7 @@ import { Toaster } from "react-hot-toast";
 import BookingDetails from "./pages/BookingDetails";
 import Checkin from "./pages/Checkin";
 import Login from "./pages/Login";
+import ProtectedRoute from "./layouts/ProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,7 +49,13 @@ const App = () => {
       />
       <BrowserRouter>
         <Routes>
-          <Route element={<AppLayout />}>
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<Navigate replace to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/bookings" element={<Bookings />} />
