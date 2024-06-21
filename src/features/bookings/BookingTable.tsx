@@ -1,4 +1,5 @@
 import Pagination from "../../components/Pagination";
+import { ContextMenuProvider } from "../../components/ui/ContextMenu";
 import Empty from "../../components/ui/Empty";
 import Spinner from "../../components/ui/Spinner";
 import Table from "../../components/ui/Table";
@@ -13,7 +14,7 @@ function BookingTable() {
   if (!bookings || !count) return <Empty resourceName="bookings" />;
 
   return (
-    <>
+    <ContextMenuProvider>
       <Table columns="0.6fr 2fr 2.4fr 1.4fr 1fr 3.2rem">
         <Table.Header>
           <div>Cabin</div>
@@ -34,7 +35,7 @@ function BookingTable() {
           <Pagination count={count} />
         </Table.Footer>
       </Table>
-    </>
+    </ContextMenuProvider>
   );
 }
 

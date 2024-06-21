@@ -6,6 +6,9 @@ import Tag from "../../components/ui/Tag";
 import Table from "../../components/ui/Table";
 import { formatCurrency } from "../../utils/currancyFormatHelpers";
 import { formatDistanceFromNow } from "../../utils/dateFormatHelper";
+import ContextMenu from "../../components/ui/ContextMenu";
+import { HiDotsVertical } from "react-icons/hi";
+import { HiOutlineEye } from "react-icons/hi2";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -35,8 +38,16 @@ const Amount = styled.div`
 `;
 
 const BookingRow = ({ booking }: { booking: TBookingTableView }) => {
-  const { cabins, endDate, guests, numNights, startDate, status, totalPrice } =
-    booking;
+  const {
+    cabins,
+    endDate,
+    guests,
+    numNights,
+    startDate,
+    status,
+    totalPrice,
+    id,
+  } = booking;
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -68,6 +79,17 @@ const BookingRow = ({ booking }: { booking: TBookingTableView }) => {
       <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
 
       <Amount>{formatCurrency(totalPrice)}</Amount>
+      <ContextMenu id={`context-menu-${id}`}>
+        <ContextMenu.Trigger>
+          <HiDotsVertical />
+        </ContextMenu.Trigger>
+        <ContextMenu.Menu>
+          <ContextMenu.MenuItem>
+            <HiOutlineEye size={16} />
+            View Details
+          </ContextMenu.MenuItem>
+        </ContextMenu.Menu>
+      </ContextMenu>
     </Table.Row>
   );
 };
