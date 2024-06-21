@@ -50,7 +50,16 @@ const CheckinBooking = () => {
   const handleCheckin = () => {
     if (!confirmPaid) return;
 
-    checkinFn(bookingId);
+    if (addBreakfast) {
+      checkinFn({
+        bookingId,
+        breakfast: {
+          hasBreakfast: true,
+          extrasPrice: optionalBreakfastPrice,
+          totalPrice: totalPrice + optionalBreakfastPrice,
+        },
+      });
+    } else checkinFn({ bookingId });
   };
 
   return (
