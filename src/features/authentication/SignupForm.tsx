@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import Form from "./forms/Form";
-import FormRow from "./forms/FormRow";
-import Input from "./forms/Input";
-import Button from "./ui/Button";
-import useSignUp from "../features/authentication/hooks/useSignUp";
+import useSignUp from "./hooks/useSignUp";
+import FormRow from "../../components/forms/FormRow";
+import Input from "../../components/forms/Input";
+import Button from "../../components/ui/Button";
+import Form from "../../components/forms/Form";
 
 export type TSignUpFormData = {
   fullName: string;

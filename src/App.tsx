@@ -13,6 +13,7 @@ import BookingDetails from "./pages/BookingDetails";
 import Checkin from "./pages/Checkin";
 import Login from "./pages/Login";
 import ProtectedRoute from "./layouts/ProtectedRoute";
+import Account from "./pages/Account";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +65,7 @@ const App = () => {
             <Route path="/cabins" element={<Cabins />} />
             <Route path="/users" element={<Users />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/account" element={<Account />} />
           </Route>
           <Route path="*" element={<p>Page Not Found</p>} />
           <Route path="/signin" element={<Login />} />

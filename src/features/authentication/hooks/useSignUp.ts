@@ -11,6 +11,9 @@ const useSignUp = () => {
         toast.success("Verify your account with your email address");
       }, 1000);
     },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
   });
 
   return { signupFn, isSigningUp };
