@@ -13,7 +13,7 @@ export const login = async ({ email, password }: TLogin) => {
   });
 
   if (error) throw new Error(error.message);
-  console.log("login", data);
+
   return data;
 };
 
@@ -112,4 +112,33 @@ export const updateCurrentUser = async ({ fullName, avatar }: TCurrentUser) => {
   }
 
   return currentUser.user;
+};
+
+export const updateCurrentUserPassword = async ({
+  currentPassword,
+  newPassword,
+}: {
+  currentPassword: string;
+  newPassword: string;
+}) => {
+  // Get the current session
+  const { data: user } = await supabase.auth.getSession();
+  if (!user.session?.user.email) return;
+
+  // Re-authenticate the user with the current password
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.session.user.email,
+    password: currentPassword,
+  });
+
+  if (signInError) throw new Error("Current password is incorrect");
+
+  // Update the user's password
+  const { error: updatePasswordError, data } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+
+  if (updatePasswordError) throw new Error(updatePasswordError.message);
+
+  return data;
 };
