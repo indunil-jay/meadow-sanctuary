@@ -1,4 +1,5 @@
 import { PAGE_SIZE } from "../constants";
+import { TCabin } from "./apiCabins";
 import supabase from "./supabase";
 
 export enum STATUS {
@@ -101,3 +102,61 @@ export const getBookings = async ({
 
   return { bookings, count };
 };
+
+export type TGuest = {
+  id: number;
+  created_at: string;
+  fullName: string;
+  email: string;
+  nationality: string;
+  countryFlag: string;
+  nationalID: string;
+};
+
+export type TBookingData = TBooking & {
+  cabins: TCabin;
+  guests: TGuest;
+};
+
+export const getBooking = async (id: number): Promise<TBookingData> => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*, cabins(*), guests(*)")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    console.error(error);
+    throw new Error("Booking not found");
+  }
+
+  return data as TBookingData;
+};
+
+export async function updateBooking(
+  id: number,
+  obj: Partial<TBooking>
+): Promise<TBooking> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .update(obj)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be updated");
+  }
+  return data;
+}
+
+export async function deleteBooking(id: number) {
+  const { data, error } = await supabase.from("bookings").delete().eq("id", id);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be deleted");
+  }
+  return data;
+}

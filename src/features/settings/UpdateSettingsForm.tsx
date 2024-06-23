@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 import Form from "../../components/forms/Form";
 import FormRow from "../../components/forms/FormRow";
 import Input from "../../components/forms/Input";
-import Spinner from "../../components/ui/Spinner";
+import Spinner from "../../components/Spinner";
 import useGetSettings from "./hooks/useGetSettings";
 import useUpdateSetting from "./hooks/useUpdateSetting";
 

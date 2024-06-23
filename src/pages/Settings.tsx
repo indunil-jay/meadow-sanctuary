@@ -1,4 +1,4 @@
-import Row from "../components/ui/Row";
+import Row from "../components/Row";
 import UpdateSettingsForm from "../features/settings/UpdateSettingsForm";
 
 const Settings = () => {

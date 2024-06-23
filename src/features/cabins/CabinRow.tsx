@@ -6,7 +6,7 @@ import CabinForm from "./CabinForm";
 import useDeleteCabin from "./hooks/useDeleteCabin";
 import { HiPencil, HiTrash } from "react-icons/hi2";
 import Modal from "../../components/ui/Modal";
-import ConfirmDelete from "../../components/ui/ConfirmDelete";
+import ConfirmDelete from "../../components/ConfirmDelete";
 import Table from "../../components/ui/Table";
 
 const Img = styled.img`

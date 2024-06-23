@@ -24,7 +24,7 @@ export const getCabins = async (): Promise<TCabin[]> => {
   return cabins;
 };
 
-export const deleteCabin = async (id: string) => {
+export const deleteCabin = async (id: number) => {
   //get macthing cabins url
   const { data: matchedCabin } = await supabase
     .from("cabins")
@@ -94,7 +94,7 @@ export const createCabin = async (
 
 export const updateCabin = async (
   cabin: Partial<TCabinFormData>,
-  id: string
+  id: number
 ) => {
   const imageName =
     typeof cabin.image === "string"

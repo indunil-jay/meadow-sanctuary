@@ -6,7 +6,7 @@ import { Textarea } from "../../components/forms/Textarea";
 import FileInput from "../../components/forms/FileInput";
 import Button from "../../components/ui/Button";
 import FormRow from "../../components/forms/FormRow";
-import Row from "../../components/ui/Row";
+import Row from "../../components/Row";
 import { TCabin } from "../../services/apiCabins";
 import useCreateCabin from "./hooks/useCreateCabin";
 import useUpdateCabin from "./hooks/useUpdateCabin";

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Logo from "../components/ui/Logo";
+import Logo from "../components/Logo";
 import MainNav from "../components/MainNav";
 import Uploader from "../data/Uploader";
 

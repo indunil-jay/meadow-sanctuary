@@ -48,13 +48,16 @@ type Props = {
 const Filter = ({ filterValue, options }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const currentFilter = searchParams.get(filterValue) || options[0].value;
   //addd url params
   const handleClicK = (value: string) => {
     searchParams.set(filterValue, value);
+
+    if (searchParams.get("page")) {
+      searchParams.set("page", "1");
+    }
     setSearchParams(searchParams);
   };
-
-  const currentFilter = searchParams.get(filterValue) || options[0].value;
 
   return (
     <StyledFilter>

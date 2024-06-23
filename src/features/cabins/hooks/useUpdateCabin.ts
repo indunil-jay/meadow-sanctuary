@@ -13,7 +13,7 @@ const useUpdateCabin = () => {
     }: {
       cabin: Partial<TCabinFormData>;
       id: string;
-    }) => updateCabin(cabin, id),
+    }) => updateCabin(cabin, +id),
     onSuccess: () => {
       toast.success("Cabin successfully updated.");
       queryClient.invalidateQueries({ queryKey: ["cabins"] });
