@@ -1,4 +1,5 @@
 import { PAGE_SIZE } from "../constants";
+import { getToday } from "../utils/dateFormatHelper";
 import { TCabin } from "./apiCabins";
 import supabase from "./supabase";
 
@@ -68,6 +69,7 @@ export type TBookingReturnType = {
   count: number | null;
 };
 
+//get all bookings
 export const getBookings = async ({
   filter,
   sort,
@@ -118,6 +120,8 @@ export type TBookingData = TBooking & {
   guests: TGuest;
 };
 
+//get booking by id
+
 export const getBooking = async (id: number): Promise<TBookingData> => {
   const { data, error } = await supabase
     .from("bookings")
@@ -133,10 +137,12 @@ export const getBooking = async (id: number): Promise<TBookingData> => {
   return data as TBookingData;
 };
 
-export async function updateBooking(
+//update booking by id
+
+export const updateBooking = async (
   id: number,
   obj: Partial<TBooking>
-): Promise<TBooking> {
+): Promise<TBooking> => {
   const { data, error } = await supabase
     .from("bookings")
     .update(obj)
@@ -149,9 +155,11 @@ export async function updateBooking(
     throw new Error("Booking could not be updated");
   }
   return data;
-}
+};
 
-export async function deleteBooking(id: number) {
+//delete booking by id
+
+export const deleteBooking = async (id: number) => {
   const { data, error } = await supabase.from("bookings").delete().eq("id", id);
 
   if (error) {
@@ -159,4 +167,74 @@ export async function deleteBooking(id: number) {
     throw new Error("Booking could not be deleted");
   }
   return data;
-}
+};
+
+export type TBookingsAfterDate = {
+  created_at: string;
+  totalPrice: number;
+  extrasPrice: number;
+};
+
+//get all booking that are were created after the given date
+export const getBookingsAfterDate = async (
+  date: string
+): Promise<TBookingsAfterDate[]> => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("created_at, totalPrice, extrasPrice")
+    .gte("created_at", date)
+    .lte("created_at", getToday({ end: true }));
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not get loaded");
+  }
+
+  return data;
+};
+
+export type TStaysAfterDate = {
+  guests: {
+    fullName: string;
+  };
+};
+
+// get all stays that are were created after the given date
+export const getStaysAfterDate = async (
+  date: string
+): Promise<(TBooking & TStaysAfterDate)[]> => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*, guests(fullName)")
+    .gte("startDate", date)
+    .lte("startDate", getToday());
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not get loaded");
+  }
+
+  return data;
+};
+
+//get today activity
+export type TTodayActivity = TBooking & {
+  guests: Pick<TGuest, "fullName" | "nationality" | "countryFlag">;
+};
+
+export const getTodayActivity = async (): Promise<TTodayActivity[]> => {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*, guests(fullName, nationality, countryFlag)")
+    .or(
+      `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`
+    )
+    .order("created_at");
+
+  if (error) {
+    console.error(error);
+    throw new Error("Bookings could not get loaded");
+  }
+
+  return data as TTodayActivity[];
+};
