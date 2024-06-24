@@ -11,7 +11,13 @@ import {
 } from "recharts";
 import { useDarkMode } from "../../contexts/Darkmode";
 import { TBookingsAfterDate } from "../../services/apiBookings";
-import { eachDayOfInterval, formatDate, isSameDay, subDays } from "date-fns";
+import {
+  eachDayOfInterval,
+  format,
+  formatDate,
+  isSameDay,
+  subDays,
+} from "date-fns";
 
 const StyledSalesChart = styled(DashboardBox)`
   grid-column: 1 / -1;
@@ -23,13 +29,15 @@ const StyledSalesChart = styled(DashboardBox)`
   }
 `;
 
+interface SalesChartProps {
+  bookings?: TBookingsAfterDate[];
+  numOfDays?: number;
+}
+
 const SalesChart = ({
-  bookings,
-  numOfDays,
-}: {
-  bookings: TBookingsAfterDate[];
-  numOfDays: number;
-}) => {
+  bookings = [], // default value for bookings
+  numOfDays = 30, // default value for numOfDays
+}: SalesChartProps) => {
   const { isDarkMode } = useDarkMode();
 
   const colors = isDarkMode
@@ -53,7 +61,7 @@ const SalesChart = ({
 
   const data = allDates.map((date) => {
     return {
-      lable: formatDate(date, "MMM dd"),
+      label: formatDate(date, "MMM dd"),
       totalSales: bookings
         .filter((booking) => isSameDay(date, new Date(booking.created_at)))
         .reduce((acc, cur) => acc + cur.totalPrice, 0),
@@ -62,9 +70,13 @@ const SalesChart = ({
         .reduce((acc, cur) => acc + cur.extrasPrice, 0),
     };
   });
+
   return (
     <StyledSalesChart>
-      <h2>Slaes</h2>
+      <h2>
+        Sales from {format(allDates[0], "MMM dd yyyy")} &mdash;{" "}
+        {format(allDates[allDates.length - 1], "MMM dd yyyy")}
+      </h2>
 
       <ResponsiveContainer height={300} width="100%">
         <AreaChart data={data}>
@@ -86,7 +98,7 @@ const SalesChart = ({
             stroke={colors.totalSales.stroke}
             fill={colors.totalSales.fill}
             strokeWidth={2}
-            name="total Sales"
+            name="Total Sales"
             unit="$"
           />
           <Area
