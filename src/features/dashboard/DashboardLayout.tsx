@@ -4,6 +4,7 @@ import Spinner from "../../components/Spinner";
 import useRecentStays from "./hooks/useRecentStays";
 import Stats from "./Stats";
 import useGetCabin from "../cabins/hooks/useGetCabin";
+import SalesChart from "./SalesChart";
 
 const StyledDashboardLayout = styled.div`
   display: grid;
@@ -24,13 +25,13 @@ const DashboardLayout = () => {
     <StyledDashboardLayout>
       <Stats
         bookings={bookings!}
-        confirmedStays={confirmedStays!}
         numOfDays={numofDays}
+        confirmedStays={confirmedStays!}
         cabinCount={cabins!.length}
       />
       <div>today's activity</div>
       <div>chart stay duration</div>
-      <div>chart sales</div>
+      <SalesChart bookings={bookings!} numOfDays={numofDays} />
     </StyledDashboardLayout>
   );
 };
