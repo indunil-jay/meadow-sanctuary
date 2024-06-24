@@ -14,16 +14,15 @@ const useRecentStays = () => {
   const queryDates = subDays(new Date(), numofDays).toISOString();
 
   const { isLoading: isRecentStayLoading, data: stays } = useQuery({
-    queryKey: ["bookings", `last-${numofDays}`],
+    queryKey: ["stays", `last-${numofDays}`],
     queryFn: () => getStaysAfterDate(queryDates),
   });
 
-  //get only confirmed stays
   const confirmedStays = stays?.filter(
     (stay) => stay.status === "checked-in" || stay.status === "checked-out"
   );
 
-  return { isRecentStayLoading, stays, confirmedStays };
+  return { isRecentStayLoading, stays, confirmedStays, numofDays };
 };
 
 export default useRecentStays;

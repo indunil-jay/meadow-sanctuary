@@ -169,8 +169,16 @@ export const deleteBooking = async (id: number) => {
   return data;
 };
 
+export type TBookingsAfterDate = {
+  created_at: string;
+  totalPrice: number;
+  extrasPrice: number;
+};
+
 //get all booking that are were created after the given date
-export const getBookingsAfterDate = async (date: string) => {
+export const getBookingsAfterDate = async (
+  date: string
+): Promise<TBookingsAfterDate[]> => {
   const { data, error } = await supabase
     .from("bookings")
     .select("created_at, totalPrice, extrasPrice")
@@ -185,8 +193,16 @@ export const getBookingsAfterDate = async (date: string) => {
   return data;
 };
 
+export type TStaysAfterDate = {
+  guests: {
+    fullName: string;
+  };
+};
+
 // get all stays that are were created after the given date
-export const getStaysAfterDate = async (date: string) => {
+export async function getStaysAfterDate(
+  date: string
+): Promise<(TBooking & TStaysAfterDate)[]> {
   const { data, error } = await supabase
     .from("bookings")
     .select("*, guests(fullName)")
@@ -199,4 +215,4 @@ export const getStaysAfterDate = async (date: string) => {
   }
 
   return data;
-};
+}
